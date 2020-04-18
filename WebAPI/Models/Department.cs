@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,13 +24,14 @@ namespace WebAPI.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        List<Category> CategoriesList { get; set; }
+        public List<Category> CategoriesList { get; set; }
 
-        List<Post> DepPostList { get; set; }
+        public  List<Post> DepPostList { get; set; }
 
-        public int MainDepID { get; set; }
+        [ForeignKey(nameof(CurrMainDepID))]
+        public int CurrMainDepID { get; set; }
 
-        public MainDep DepToMainDep { get; set; }
+        public MainDep CurrMainDep { get; set; }
 
 
     }

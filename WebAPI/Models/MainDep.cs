@@ -23,8 +23,8 @@ namespace WebAPI.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public String Creator { get; set; }
-        public List<Department>  DepartmentList { get; set; }
+        public string Creator { get; set; }
+        public List<Department> DepartmentList { get; set; }
         
 
 

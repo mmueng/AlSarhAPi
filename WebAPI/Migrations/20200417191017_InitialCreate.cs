@@ -188,14 +188,14 @@ namespace WebAPI.Migrations
                     Creator = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
-                    MainDepID = table.Column<int>(nullable: false)
+                    CurrMainDepID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Departments", x => x.DepID);
                     table.ForeignKey(
-                        name: "FK_Departments_MainDeps_MainDepID",
-                        column: x => x.MainDepID,
+                        name: "FK_Departments_MainDeps_CurrMainDepID",
+                        column: x => x.CurrMainDepID,
                         principalTable: "MainDeps",
                         principalColumn: "MainDepID",
                         onDelete: ReferentialAction.Cascade);
@@ -215,18 +215,24 @@ namespace WebAPI.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     DepID = table.Column<int>(nullable: false),
-                    CategToDepDepID = table.Column<int>(nullable: true),
+                    CurrDepartmentDepID = table.Column<int>(nullable: true),
                     MainDepID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.CategoryID);
                     table.ForeignKey(
-                        name: "FK_Categories_Departments_CategToDepDepID",
-                        column: x => x.CategToDepDepID,
+                        name: "FK_Categories_Departments_CurrDepartmentDepID",
+                        column: x => x.CurrDepartmentDepID,
                         principalTable: "Departments",
                         principalColumn: "DepID",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Categories_MainDeps_MainDepID",
+                        column: x => x.MainDepID,
+                        principalTable: "MainDeps",
+                        principalColumn: "MainDepID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -242,31 +248,32 @@ namespace WebAPI.Migrations
                     Creator = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
-                    CategoryID = table.Column<int>(nullable: false),
-                    DepID = table.Column<int>(nullable: false),
-                    PostToDepDepID = table.Column<int>(nullable: true),
-                    MainDepID = table.Column<int>(nullable: false)
+                    CurrCategoryID = table.Column<int>(nullable: false),
+                    CurrDepID = table.Column<int>(nullable: false),
+                    CurrDepartmentDepID = table.Column<int>(nullable: true),
+                    pMainDepID = table.Column<int>(nullable: false),
+                    CurrMainDepMainDepID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Posts", x => x.PostID);
                     table.ForeignKey(
-                        name: "FK_Posts_Categories_CategoryID",
-                        column: x => x.CategoryID,
+                        name: "FK_Posts_Categories_CurrCategoryID",
+                        column: x => x.CurrCategoryID,
                         principalTable: "Categories",
                         principalColumn: "CategoryID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Posts_MainDeps_MainDepID",
-                        column: x => x.MainDepID,
-                        principalTable: "MainDeps",
-                        principalColumn: "MainDepID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Posts_Departments_PostToDepDepID",
-                        column: x => x.PostToDepDepID,
+                        name: "FK_Posts_Departments_CurrDepartmentDepID",
+                        column: x => x.CurrDepartmentDepID,
                         principalTable: "Departments",
                         principalColumn: "DepID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Posts_MainDeps_CurrMainDepMainDepID",
+                        column: x => x.CurrMainDepMainDepID,
+                        principalTable: "MainDeps",
+                        principalColumn: "MainDepID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -310,29 +317,34 @@ namespace WebAPI.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_CategToDepDepID",
+                name: "IX_Categories_CurrDepartmentDepID",
                 table: "Categories",
-                column: "CategToDepDepID");
+                column: "CurrDepartmentDepID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_MainDepID",
+                name: "IX_Categories_MainDepID",
+                table: "Categories",
+                column: "MainDepID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Departments_CurrMainDepID",
                 table: "Departments",
-                column: "MainDepID");
+                column: "CurrMainDepID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_CategoryID",
+                name: "IX_Posts_CurrCategoryID",
                 table: "Posts",
-                column: "CategoryID");
+                column: "CurrCategoryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_MainDepID",
+                name: "IX_Posts_CurrDepartmentDepID",
                 table: "Posts",
-                column: "MainDepID");
+                column: "CurrDepartmentDepID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_PostToDepDepID",
+                name: "IX_Posts_CurrMainDepMainDepID",
                 table: "Posts",
-                column: "PostToDepDepID");
+                column: "CurrMainDepMainDepID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

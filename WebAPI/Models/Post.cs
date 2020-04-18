@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,22 +22,23 @@ namespace WebAPI.Models
         public String Creator { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public string ImgPath { get; set; }
 
-      
-        // Cover photo For post
-        //public int PhotoID { get; set; }
+        public List<Photo> PhotoList { get; set; }
 
-        //  List<Photo> CategoriesList { get; set; }
+        [ForeignKey(nameof(CurrCategoryID))]
+        public int CurrCategoryID { get; set; }
+        public Category CurrCategory { get; set; }
+
         
-        public int CategoryID { get; set; }
-        public Category PostToCategory { get; set; }
+        [ForeignKey(nameof(CurrDepID))]
+        public int CurrDepID { get; set; }
+        public Department CurrDepartment { get; set; }
 
-        public int DepID { get; set; }
 
-        public Department PostToDep { get; set; }
+        [ForeignKey(nameof(pMainDepID))]
+        public int pMainDepID { get; set; }
+        public MainDep CurrMainDep { get; set; }
 
-        public int MainDepID { get; set; }
-
-        public MainDep PostToMainDep { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +16,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Serialization;
+
 
 namespace WebAPI
 {
@@ -31,6 +33,10 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+ options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
             //Inject AppSettings
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
 
@@ -58,7 +64,7 @@ namespace WebAPI
               );
 
             services.AddCors();
-
+            services.AddMvc();
             // JWT Authentication
             var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_Secret"].ToString());
             services.AddAuthentication(x =>
@@ -80,6 +86,8 @@ namespace WebAPI
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+   
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,7 +105,7 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
+           
             app.UseCors(builder => builder.WithOrigins(Configuration["ApplicationSettings:Client_URL"].ToString())
                 .AllowAnyHeader()
                 .AllowAnyMethod()
@@ -105,7 +113,7 @@ namespace WebAPI
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+         
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

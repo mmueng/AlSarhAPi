@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models;
 
@@ -12,10 +13,27 @@ namespace WebAPI.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        private AuthenticationContext dbContext;
         public WeatherForecastController(AuthenticationContext context)
         {
-
+            dbContext = context;
         }
+        [HttpPost]
+        public async Task<ActionResult<MainDep>> PostMainDep(MainDep model)
+        {
+            dbContext.MainDeps.Add(model);
+            try
+            {
+              await   dbContext.SaveChangesAsync();
+
+                return CreatedAtAction("GetMainDepDetail", new { id = model.MainDepID }, model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -31,10 +49,10 @@ namespace WebAPI.Controllers
         }
 
         // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+       // [HttpPost]
+      //  public void Post([FromBody] string value)
+      //  {
+      //  }
 
         // PUT api/values/5
         [HttpPut("{id}")]

@@ -232,14 +232,14 @@ namespace WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CategToDepDepID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Creator")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CurrDepartmentDepID")
+                        .HasColumnType("int");
 
                     b.Property<int>("DepID")
                         .HasColumnType("int");
@@ -266,7 +266,9 @@ namespace WebAPI.Migrations
 
                     b.HasKey("CategoryID");
 
-                    b.HasIndex("CategToDepDepID");
+                    b.HasIndex("CurrDepartmentDepID");
+
+                    b.HasIndex("MainDepID");
 
                     b.ToTable("Categories");
                 });
@@ -284,14 +286,14 @@ namespace WebAPI.Migrations
                     b.Property<string>("Creator")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CurrMainDepID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DescriptionAR")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MainDepID")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -306,7 +308,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("DepID");
 
-                    b.HasIndex("MainDepID");
+                    b.HasIndex("CurrMainDepID");
 
                     b.ToTable("Departments");
                 });
@@ -353,16 +355,22 @@ namespace WebAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Creator")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DepID")
+                    b.Property<int>("CurrCategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrDepID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CurrDepartmentDepID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CurrMainDepMainDepID")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -370,12 +378,6 @@ namespace WebAPI.Migrations
 
                     b.Property<string>("DescriptionAR")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MainDepID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PostToDepDepID")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -388,13 +390,16 @@ namespace WebAPI.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("pMainDepID")
+                        .HasColumnType("int");
+
                     b.HasKey("PostID");
 
-                    b.HasIndex("CategoryID");
+                    b.HasIndex("CurrCategoryID");
 
-                    b.HasIndex("MainDepID");
+                    b.HasIndex("CurrDepartmentDepID");
 
-                    b.HasIndex("PostToDepDepID");
+                    b.HasIndex("CurrMainDepMainDepID");
 
                     b.ToTable("Posts");
                 });
@@ -471,37 +476,41 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("WebAPI.Models.Category", b =>
                 {
-                    b.HasOne("WebAPI.Models.Department", "CategToDep")
+                    b.HasOne("WebAPI.Models.Department", "CurrDepartment")
+                        .WithMany("CategoriesList")
+                        .HasForeignKey("CurrDepartmentDepID");
+
+                    b.HasOne("WebAPI.Models.MainDep", "CurrMainDep")
                         .WithMany()
-                        .HasForeignKey("CategToDepDepID");
+                        .HasForeignKey("MainDepID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WebAPI.Models.Department", b =>
                 {
-                    b.HasOne("WebAPI.Models.MainDep", "DepToMainDep")
+                    b.HasOne("WebAPI.Models.MainDep", "CurrMainDep")
                         .WithMany("DepartmentList")
-                        .HasForeignKey("MainDepID")
+                        .HasForeignKey("CurrMainDepID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("WebAPI.Models.Post", b =>
                 {
-                    b.HasOne("WebAPI.Models.Category", "PostToCategory")
+                    b.HasOne("WebAPI.Models.Category", "CurrCategory")
                         .WithMany("CategPostList")
-                        .HasForeignKey("CategoryID")
+                        .HasForeignKey("CurrCategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebAPI.Models.MainDep", "PostToMainDep")
-                        .WithMany()
-                        .HasForeignKey("MainDepID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("WebAPI.Models.Department", "CurrDepartment")
+                        .WithMany("DepPostList")
+                        .HasForeignKey("CurrDepartmentDepID");
 
-                    b.HasOne("WebAPI.Models.Department", "PostToDep")
+                    b.HasOne("WebAPI.Models.MainDep", "CurrMainDep")
                         .WithMany()
-                        .HasForeignKey("PostToDepDepID");
+                        .HasForeignKey("CurrMainDepMainDepID");
                 });
 #pragma warning restore 612, 618
         }

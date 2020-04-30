@@ -22,6 +22,7 @@ namespace WebAPI.Models
         public DbSet<Department> Departments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Photo> Photos { get; set; }
       //  protected override void OnModelCreating(ModelBuilder modelBuilder)
        // {
         //    modelBuilder.ApplyConfiguration(new MainDBDepartmentConfiguration());

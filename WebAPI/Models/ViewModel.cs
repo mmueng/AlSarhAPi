@@ -19,5 +19,8 @@ namespace WebAPI.Models
         // Post Model
         public Post NewPost { get; set; }
         public List<Post> AllPosts { get; set; }
+
+        public Photo NewPhoto { get; set; }
+        public List<Photo> AllPhotos { get; set; }
     }
 }

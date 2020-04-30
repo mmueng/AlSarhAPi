@@ -9,6 +9,7 @@ namespace WebAPI.Models
 {
     public class Post
     {
+
         [Key]
         public int PostID { get; set; }
 
@@ -24,21 +25,29 @@ namespace WebAPI.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public string ImgPath { get; set; }
 
+        // List of Photo
         public List<Photo> PhotoList { get; set; }
+
+        // Category
 
         [ForeignKey(nameof(CurrCategoryID))]
         public int CurrCategoryID { get; set; }
         public Category CurrCategory { get; set; }
 
-        
+        // Department
         [ForeignKey(nameof(CurrDepID))]
         public int CurrDepID { get; set; }
         public Department CurrDepartment { get; set; }
 
-
+        // Main Dep
         [ForeignKey(nameof(pMainDepID))]
         public int pMainDepID { get; set; }
         public MainDep CurrMainDep { get; set; }
+
+       public Post()
+        {
+            PhotoList = new List<Photo>();
+        }
 
     }
 }

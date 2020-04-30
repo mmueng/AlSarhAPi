@@ -348,6 +348,29 @@ namespace WebAPI.Migrations
                     b.ToTable("MainDeps");
                 });
 
+            modelBuilder.Entity("WebAPI.Models.Photo", b =>
+                {
+                    b.Property<int>("PhotoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CurPostID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CurrPostPostID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImgPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PhotoId");
+
+                    b.HasIndex("CurrPostPostID");
+
+                    b.ToTable("Photos");
+                });
+
             modelBuilder.Entity("WebAPI.Models.Post", b =>
                 {
                     b.Property<int>("PostID")
@@ -377,6 +400,9 @@ namespace WebAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DescriptionAR")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImgPath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -494,6 +520,13 @@ namespace WebAPI.Migrations
                         .HasForeignKey("CurrMainDepID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebAPI.Models.Photo", b =>
+                {
+                    b.HasOne("WebAPI.Models.Post", "CurrPost")
+                        .WithMany("PhotoList")
+                        .HasForeignKey("CurrPostPostID");
                 });
 
             modelBuilder.Entity("WebAPI.Models.Post", b =>

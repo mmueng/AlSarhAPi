@@ -248,6 +248,7 @@ namespace WebAPI.Migrations
                     Creator = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
+                    ImgPath = table.Column<string>(nullable: true),
                     CurrCategoryID = table.Column<int>(nullable: false),
                     CurrDepID = table.Column<int>(nullable: false),
                     CurrDepartmentDepID = table.Column<int>(nullable: true),
@@ -274,6 +275,27 @@ namespace WebAPI.Migrations
                         column: x => x.CurrMainDepMainDepID,
                         principalTable: "MainDeps",
                         principalColumn: "MainDepID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Photos",
+                columns: table => new
+                {
+                    PhotoId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ImgPath = table.Column<string>(nullable: true),
+                    CurPostID = table.Column<int>(nullable: true),
+                    CurrPostPostID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Photos", x => x.PhotoId);
+                    table.ForeignKey(
+                        name: "FK_Photos_Posts_CurrPostPostID",
+                        column: x => x.CurrPostPostID,
+                        principalTable: "Posts",
+                        principalColumn: "PostID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -332,6 +354,11 @@ namespace WebAPI.Migrations
                 column: "CurrMainDepID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Photos_CurrPostPostID",
+                table: "Photos",
+                column: "CurrPostPostID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_CurrCategoryID",
                 table: "Posts",
                 column: "CurrCategoryID");
@@ -365,13 +392,16 @@ namespace WebAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Photos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "Categories");

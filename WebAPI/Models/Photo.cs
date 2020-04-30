@@ -10,20 +10,17 @@ namespace WebAPI.Models
     public class Photo
     {
         [Key]
-        public int Id { get; set; }
+        public int PhotoId { get; set; }
         public string ImgPath { get; set; }
 
+        [ForeignKey(nameof(CurPostID))]
+       public int? CurPostID { get; set; }
+       public Post CurrPost { get; set; }
+        
+        //  [Required]
+        // public string Name { get; set; }
 
-        [ForeignKey(nameof(CurrPostID))]
-        public int CurrPostID { get; set; }
-        public Post CurrPost { get; set; }
-
-
-
-      //  [Required]
-       // public string Name { get; set; }
-
-      //  [Required]
-       // public string Address { get; set; }
+        //  [Required]
+        // public string Address { get; set; }
     }
 }

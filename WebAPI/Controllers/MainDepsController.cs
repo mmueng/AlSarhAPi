@@ -35,8 +35,9 @@ namespace WebAPI.Controllers
                // .ToListAsync();
             //return await _context.MainDeps.ToListAsync(); ;
           //  .Include(a => a.DepartmentList).ThenInclude(cs => cs.DepPostList)
- .Include(a => a.DepartmentList).ThenInclude(cs => cs.CategoriesList).ThenInclude(p => p.CategPostList).ToList();
-            return  Ok( AllList);
+ .Include(d => d.DepartmentList).ThenInclude(c => c.CategoriesList).ThenInclude(ca => ca.CategPostList).ThenInclude(ph=>ph.PhotoList).ToList();
+             return  Ok( AllList);
+
         }
 
         // GET: api/MainDeps/5

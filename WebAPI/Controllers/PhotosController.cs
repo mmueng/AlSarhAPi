@@ -136,7 +136,12 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
-
+            // Delete physical photo 
+            if (System.IO.File.Exists(photo.ImgPath))
+            {
+                System.IO.File.Delete(photo.ImgPath);
+            }
+            // Delet photo 
             _context.Photos.Remove(photo);
             await _context.SaveChangesAsync();
 

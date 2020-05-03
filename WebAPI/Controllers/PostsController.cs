@@ -37,13 +37,15 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<Post>> GetPost(int id)
         {
             var post = await _context.Posts.FindAsync(id);
-
+            var list = _context.Posts.Include(p => p.PhotoList);
+            var a = await list.FirstOrDefaultAsync(a => a.PostID == id);
             if (post == null)
             {
                 return NotFound();
             }
 
-            return post;
+            return a;
+           // return post;
         }
 
         // PUT: api/Posts/5
@@ -90,58 +92,12 @@ namespace WebAPI.Controllers
             post.CurrMainDep = maindep;
             var dep = await _context.Departments.FindAsync(post.CurrDepID);
             post.CurrDepartment = dep;
-
             var categ = await _context.Categories.FindAsync(post.CurrCategoryID);
             post.CurrCategory = categ;
-            foreach (var a in photoLists)
-            {
-                var photo = await _context.Photos.FindAsync(a.ImgPath);
-
-                photo.CurPostID = post.PostID;
-                photo.CurrPost = post;
-                // newPhoto.CurPostID = post.PostID;
-                // newPhoto.CurrPost = post;
-                //await _PhotosController.PostPhoto(newPhoto);
-                 post.PhotoList.Add(photo);
-                await _context.SaveChangesAsync();
-            }
-
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
-            Console.WriteLine("****************************");
-            Console.WriteLine("****************************");
-            Console.WriteLine("POst ID => " + post.PostID);
-            Console.WriteLine("****************************");
-            foreach (var a in photoLists)
-            {
-                var photo = await _context.Photos.FindAsync(a.ImgPath);
-
-                photo.CurPostID = post.PostID;
-                photo.CurrPost = post;
-
-                await PutPhoto(photo.PhotoId, photo);
-              _context.Entry(photo).State = EntityState.Modified;
-                // newPhoto.CurPostID = post.PostID;
-                // newPhoto.CurrPost = post;
-                //await _PhotosController.PostPhoto(newPhoto);
-                // post.PhotoList.Add(newPhoto);
-                await _context.SaveChangesAsync();
-            }
-            foreach (var a in photoLists)
-            {
-                Photo newPhoto = new Photo();
-                newPhoto.ImgPath = a.ImgPath;
-                // newPhoto.CurPostID = post.PostID;
-                // newPhoto.CurrPost = post;
-                //await _PhotosController.PostPhoto(newPhoto);
-
-                _context.Photos.Add(newPhoto);
-                await _context.SaveChangesAsync();
-            }
-             _context.SaveChanges();
-
-             return CreatedAtAction("GetPost", new { id = post.PostID }, post);
-           // return Ok(new { post.PostID });
+            //return CreatedAtAction("GetPost", new { id = post.PostID }, post);
+            return Ok(new { post.PostID });
         }
 
         // DELETE: api/Posts/5
@@ -149,12 +105,24 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<Post>> DeletePost(int id)
         {
             var post = await _context.Posts.FindAsync(id);
+            var list = _context.Posts.Include(p => p.PhotoList);
+                var ph = _context.Photos.Where(p => p.CurPostID==id).ToList();
+            foreach(var photo in ph)
+            {
+                if (System.IO.File.Exists(photo.ImgPath))
+                {
+                    System.IO.File.Delete(photo.ImgPath);
+                }
+                _context.Photos.Remove(photo);
+            }
+            var a = await list.FirstOrDefaultAsync(a => a.PostID == id);
             if (post == null)
             {
                 return NotFound();
             }
 
-            _context.Posts.Remove(post);
+          //  _context.Posts.Remove(post);
+            _context.Posts.Remove(a);
             await _context.SaveChangesAsync();
 
             return post;

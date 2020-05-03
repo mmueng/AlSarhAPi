@@ -33,18 +33,27 @@ namespace WebAPI.Controllers
 
                 if (file.Length > 0)
                 {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                   // file.FileName.Insert(0, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+                   var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                 fileName= fileName.Insert(0, DateTime.Now.ToString("yyyyMMddHHmmssfff"));
                     var fullPath = Path.Combine(pathToSave, fileName);
                     var dbPath = Path.Combine(folderName, fileName);
 
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
-                        file.CopyTo(stream);
+                       
+                      //  string newFileName = stream.Name+ DateTime.Now.ToString();
+                       file.CopyTo(stream);
+                     //  file.Move(oldFileName, newFileName);
+
                     }
+                   // string oldFileName = dbPath;
+                  //  string newFileName = dbPath + DateTime.Now.ToString();
+                  //  file.Move(oldFileName, newFileName);
                     //Photo newPhoto = new Photo();
-                   // newPhoto.ImgPath = dbPath;
-                   // _context.Photos.Add(newPhoto);
-                   // _context.SaveChanges();
+                    // newPhoto.ImgPath = dbPath;
+                    // _context.Photos.Add(newPhoto);
+                    // _context.SaveChanges();
                     return Ok(new { dbPath });
                 }
                 else
